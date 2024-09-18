@@ -9,6 +9,8 @@ interface LoanApplicationBody {
   employmentStatus: string;
   employerAddress: string;
   consent: boolean;
+  loanId: string;
+  loanStatus : string;
 }
 
 const loanApplication = async (req: Request<{}, {}, LoanApplicationBody>, res: Response): Promise<void> => {
@@ -23,6 +25,7 @@ const loanApplication = async (req: Request<{}, {}, LoanApplicationBody>, res: R
       loanReason,
       employmentStatus,
       employerAddress,
+      loanStatus:"Pending"
     });
 
     // Send success response
@@ -46,4 +49,36 @@ const getLoans = async (req: Request<{}, {}, LoanApplicationBody>, res: Response
 };
 
 
-export { loanApplication,getLoans };
+const updateLoanStatus = async (req: Request<{}, {}, LoanApplicationBody>, res: Response): Promise<void> => {
+  try {
+    const { loanId, loanStatus } = req.body;
+
+    // Find the loan by ID
+    const loan = await LoanApplicationModel.findById(loanId);
+    console.log(loanStatus,loan?.loanStatus)
+    // Check if the loan exists
+    if (!loan) {
+      console.log('not present')
+      res.status(404).json({ error: 'Loan application not found' });
+      return; // Ensure the function exits after sending the response
+    }
+
+    console.log('l',loan)
+    loan.loanStatus = loanStatus;
+
+
+    // Save the changes
+    await loan.save();
+    
+    console.log('loan',loan)
+    // Respond with success
+    res.status(200).json({ message: 'Loan status updated successfully', loan });
+  } catch (error) {
+    console.error('Error updating loan status', error);
+    res.status(500).json({ error: 'An error occurred while updating the loan status' });
+  }
+};
+
+
+
+export { loanApplication,getLoans,updateLoanStatus };

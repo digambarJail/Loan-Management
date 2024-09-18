@@ -7,6 +7,7 @@ interface ILoanApplication extends Document {
   employmentStatus: string;
   employerAddress: string;
   consent: boolean;
+  loanStatus : string;
 }
 
 const LoanApplicationSchema: Schema = new Schema({
