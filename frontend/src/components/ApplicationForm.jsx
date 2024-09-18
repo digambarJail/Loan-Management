@@ -35,7 +35,7 @@ export default function LoanApplicationForm() {
       };
 
       // Send POST request to server
-      const response = await axios.post(`http://localhost:8000/api/apply`, loanData);
+      const response = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/apply`, loanData);
 
       if (response.status === 201) {
         alert('Loan application submitted successfully.');

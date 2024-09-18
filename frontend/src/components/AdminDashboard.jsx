@@ -9,7 +9,7 @@ export default function CreditAppDashboard() {
   useEffect(() => {
     const fetchLoans = async () => {
       try {
-        const response = await axios.get('http://localhost:8000/api/getLoans');
+        const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/getLoans`);
         console.log('respo',response.data.loans)
         const fetchedLoans = response.data.loans;
         setLoans(fetchedLoans);
