@@ -1,13 +1,64 @@
-import React from 'react';
+import React, { useEffect,useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 function Account() {
 
     const navigate = useNavigate();
 
+    const [loans, setLoans] = useState([]); // State to store loan data
+    const [searchQuery, setSearchQuery] = useState(''); // State to store search query
+
     const redirect = () => {
       navigate('/');  // Redirects to the home page
     };
+
+    useEffect(() => {
+        const fetchLoans = async () => {
+          try {
+            const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/getLoans`);
+            const fetchedLoans = response.data.loans;
+            setLoans(fetchedLoans);
+    
+          } catch (error) {
+            console.error("Error fetching loans in frontend", error);
+          }
+        };
+    
+        fetchLoans();
+      }, []);
+
+    const getStatusColor = (status) => {
+        switch (status) {
+          case "Pending":
+            return "bg-yellow-500";
+          case "Approved":
+            return "bg-green-500";
+          case "Under Review":
+            return "bg-blue-500";
+          case "Rejected":
+            return "bg-red-500";
+          default:
+            return "bg-gray-200";
+        }
+      };
+    
+      const formatDate = (dateString) => {
+        const date = new Date(dateString);
+        return date.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+      };
+
+      const filteredLoans = loans.filter((loan) => {
+
+        const name = loan.name.toLowerCase();
+    
+        const reason = loan.loanReason.toLowerCase();
+    
+        const query = searchQuery.toLowerCase();
+    
+        return name.includes(query) || reason.includes(query);
+    
+      });
 
     return (
         <div className="container mx-auto px-4">
@@ -89,7 +140,7 @@ function Account() {
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
-                <input className="ml-2 px-2 py-1 rounded-md w-full focus:outline-none focus:ring focus:ring-blue-300" type="text" placeholder="Search for loans" />
+                <input onChange={(e) => setSearchQuery(e.target.value)} className="ml-2 px-2 py-1 rounded-md w-full focus:outline-none focus:ring focus:ring-blue-300" type="text" placeholder="Search for loans" />
             </div>
             </div>
         </div>
@@ -107,82 +158,41 @@ function Account() {
                     <span>Filter</span>
                 </div>
             </div>
-            <div className="bg-white rounded-lg shadow-md p-4">
-                <table className="w-full border-collapse">
-                    <thead>
-                        <tr className="border-b">
-                            <th className="py-2 px-4 text-left">Loan Officer</th>
-                            <th className="py-2 px-4 text-left">Amount</th>
-                            <th className="py-2 px-4 text-left">Date Applied</th>
-                            <th className="py-2 px-4 text-left">Status</th>
-                            <th className="py-2 px-4 text-left">Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {[
-                            {
-                                img: "https://randomuser.me/api/portraits/men/75.jpg",
-                                name: "John Okoh",
-                                updated: "Updated 1 day ago",
-                                amount: "50,000.00",
-                                status: "Net Debt Yet",
-                                dateApplied: "June 09, 2021",
-                                timeApplied: "6:30 PM",
-                                buttonClass: "bg-yellow-400 hover:bg-yellow-500",
-                                buttonText: "PENDING",
-                            },
-                            {
-                                img: "https://randomuser.me/api/portraits/men/75.jpg",
-                                name: "John Okoh",
-                                updated: "Updated 1 day ago",
-                                amount: "100,000.00",
-                                status: "Net Debt Yet",
-                                dateApplied: "June 07, 2021",
-                                timeApplied: "6:30 PM",
-                                buttonClass: "bg-green-400 hover:bg-green-500",
-                                buttonText: "VERIFIED",
-                            },
-                            {
-                                img: "https://randomuser.me/api/portraits/men/75.jpg",
-                                name: "John Okoh",
-                                updated: "Updated 1 day ago",
-                                amount: "100,000.00",
-                                status: "Net Debt Yet",
-                                dateApplied: "June 07, 2021",
-                                timeApplied: "6:30 PM",
-                                buttonClass: "bg-red-400 hover:bg-red-500",
-                                buttonText: "REJECTED",
-                            },
-                            {
-                                img: "https://randomuser.me/api/portraits/men/75.jpg",
-                                name: "John Okoh",
-                                updated: "Updated 1 day ago",
-                                amount: "100,000.00",
-                                status: "Loan Fully Paid",
-                                dateApplied: "May 27, 2021",
-                                timeApplied: "6:30 PM",
-                                buttonClass: "bg-blue-400 hover:bg-blue-500",
-                                buttonText: "APPROVED",
-                            },
-                        ].map((loan, index) => (
-                            <tr key={index} className="border-b">
-                                <td className="py-2 px-4 flex items-center space-x-4">
-                                    <img className="w-8 h-8 rounded-full" src={loan.img} alt={loan.name} />
-                                    <span>{loan.name}</span>
-                                </td>
-                                <td className="py-2 px-4">{loan.amount}</td>
-                                <td className="py-2 px-4">{loan.dateApplied}</td>
-                                <td className="py-2 px-4">{loan.status}</td>
-                                <td className="py-2 px-4 flex items-center space-x-2">
-                                    <button className={`text-white font-bold py-1 px-2 rounded-lg ${loan.buttonClass}`}>
-                                        {loan.buttonText}
-                                    </button>
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-            </div>
+            <div className="bg-white p-6 rounded-lg shadow-md">
+          <h2 className="text-lg font-semibold mb-4">Applied Loans</h2>
+          <table className="w-full table-auto">
+            <thead>
+              <tr>
+                <th className="px-4 text-center py-2"></th> {/* Name Column */}
+                <th className="px-4 text-center py-2">Name</th> {/* Name Column */}
+                <th className="px-4 text-center py-2">Loan Reason</th> {/* Loan Reason Column */}
+                <th className="px-4 text-center py-2">Loan Amount</th> {/* Loan Amount Column */}
+                <th className="px-4 text-center py-2">Date</th> {/* Loan Amount Column */}
+                <th className="px-4 text-center py-2">Status</th> {/* Status Column */}
+              </tr>
+            </thead>
+            <tbody>
+              {filteredLoans.map((loan, index) => (
+                <tr key={index}>
+                <td className="border text-center px-4 py-2">
+                    <img
+                      src="https://randomuser.me/api/portraits/men/1.jpg"
+                      alt="User"
+                      className="h-10 w-10 rounded-full mx-auto"
+                    />
+                  </td>
+                  <td className="border text-center px-4 py-2">{loan.name}</td>
+                  <td className="border text-center px-4 py-2">{loan.loanReason}</td>
+                  <td className="border text-center px-4 py-2">{loan.loanAmount}</td>
+                  <td className="border text-center px-4 py-2">{formatDate(loan.createdAt)}</td>
+                  <td className={`border rounded-3xl text-center px-2 py-1.5 ${getStatusColor(loan.loanStatus)}`}>
+                    {loan.loanStatus}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
         </div>
 
         </div>
