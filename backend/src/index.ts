@@ -14,7 +14,7 @@ app.use(express.json());
 
 // CORS configuration to allow requests from port 5173
 app.use(cors({
-    origin: 'http://localhost:5173', // Allow requests from Vite dev server
+    origin: 'https://loan-management-1-pz4z.onrender.com/', // Allow requests from Vite dev server
     methods: ['GET', 'POST', 'PUT', 'DELETE'], // Allowed methods
     credentials: true, // Enable cookies and credentials if needed
 }));
