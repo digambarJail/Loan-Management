@@ -324,7 +324,7 @@ export default function CreditAppDashboard() {
                               className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
                               onClick={() => handleStatusChange(loan._id, 'Approved',index)}
                             >
-                              Approved
+                              Approve
                             </button>
                             <button
                               className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
@@ -336,7 +336,7 @@ export default function CreditAppDashboard() {
                               className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
                               onClick={() => handleStatusChange(loan._id, 'Rejected',index)}
                             >
-                              Rejected
+                              Reject
                             </button>
                           </div>
                         </div>

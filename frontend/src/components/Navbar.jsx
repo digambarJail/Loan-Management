@@ -1,24 +1,40 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { FaBell, FaCommentDots, FaUser, FaBars } from 'react-icons/fa';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 function Navbar() {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const [user, setUser] = useState('');
+
+  // Close the dropdown if the route changes
+  useEffect(() => {
+    setIsDropdownOpen(false);
+
+    console.log('loca',location)
+    if(location.pathname === '/admin'){
+        setUser('Admin')
+    }
+    else{
+        setUser('Verifier')
+    }
+  }, [location]);
 
   const toggleDropdown = () => {
-    setIsDropdownOpen(!isDropdownOpen);
+    setIsDropdownOpen((prev) => !prev);
   };
 
-  const handleAdminClick = () =>{
-    setIsDropdownOpen(false);
+  const handleAdminClick = (e) => {
+    e.preventDefault(); // Prevent default anchor behavior
     navigate('/admin');
-  }
+  };
 
-  const handleVerifierClick = () =>{
-    setIsDropdownOpen(false);
+  const handleVerifierClick = (e) => {
+    e.preventDefault(); // Prevent default anchor behavior
     navigate('/verifier');
-  }
+  };
 
   return (
     <nav className="bg-white shadow-3xl py-2">
@@ -50,7 +66,7 @@ function Navbar() {
               className="flex items-center space-x-1 text-[#0A512F] hover:text-green-700 focus:outline-none"
             >
               <FaUser size={20} />
-              <span>Verifier</span>
+              <span>{user}</span>
               <svg
                 className="w-4 h-4"
                 fill="none"

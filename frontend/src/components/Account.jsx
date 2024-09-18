@@ -69,7 +69,7 @@ function Account() {
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 4a1 1 0 011-1v-3a1 1 0 011-1h3a1 1 0 011 1v3a1 1 0 011 1h2a1 1 0 011 1v3a1 1 0 01-1 1h-3a1 1 0 01-1-1v-3a1 1 0 01-1-1h-2a1 1 0 01-1-1v-3a1 1 0 011-1h3a1 1 0 011 1v-3a1 1 0 01-1-1h-3a1 1 0 01-1-1" />
                 </svg>
-                <span>Home</span>
+                <span onClick={redirect}>Home</span>
             </button>
             <button className="flex items-center space-x-2">
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -88,17 +88,6 @@ function Account() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H7a3 3 0 00-3 3v8a3 3 0 003 3z" />
                 </svg>
                 <span>Card</span>
-            </button>
-            <button className="flex items-center space-x-2">
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a2 2 0 012-2h1a2 2 0 012 2v7.242A2.032 2.032 0 0121 18.595l-1.405-1.405M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                <span>1</span>
-            </button>
-            <button className="flex items-center space-x-2">
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 8v4m4 4h.01M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 4a1 1 0 011-1v-3a1 1 0 011-1h3a1 1 0 011 1v3a1 1 0 011 1h2a1 1 0 011 1v3a1 1 0 01-1 1h-3a1 1 0 01-1-1v-3a1 1 0 01-1-1h-2a1 1 0 01-1-1v-3a1 1 0 011-1h3a1 1 0 011 1v-3a1 1 0 01-1-1h-3a1 1 0 01-1-1" />
-                </svg>
             </button>
             <button className="flex items-center space-x-2">
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -168,7 +157,7 @@ function Account() {
                 <th className="px-4 text-center py-2">Loan Reason</th> {/* Loan Reason Column */}
                 <th className="px-4 text-center py-2">Loan Amount</th> {/* Loan Amount Column */}
                 <th className="px-4 text-center py-2">Date</th> {/* Loan Amount Column */}
-                <th className="px-4 text-center py-2">Status</th> {/* Status Column */}
+                <th className="px-4 text-center">Status</th> {/* Status Column */}
               </tr>
             </thead>
             <tbody>
@@ -185,7 +174,7 @@ function Account() {
                   <td className="border text-center px-4 py-2">{loan.loanReason}</td>
                   <td className="border text-center px-4 py-2">{loan.loanAmount}</td>
                   <td className="border text-center px-4 py-2">{formatDate(loan.createdAt)}</td>
-                  <td className={`border rounded-3xl text-center px-2 py-1.5 ${getStatusColor(loan.loanStatus)}`}>
+                  <td className={`border rounded-3xl text-center px-2 ${getStatusColor(loan.loanStatus)}`}>
                     {loan.loanStatus}
                   </td>
                 </tr>

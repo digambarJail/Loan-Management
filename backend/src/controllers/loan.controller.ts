@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import LoanApplicationModel from '../models/LoanApplication.model';
+import sendMail from './email.controller';
 
 // Define the expected structure of the form data
 interface LoanApplicationBody {
@@ -55,7 +56,6 @@ const updateLoanStatus = async (req: Request<{}, {}, LoanApplicationBody>, res: 
 
     // Find the loan by ID
     const loan = await LoanApplicationModel.findById(loanId);
-    console.log(loanStatus,loan?.loanStatus)
     // Check if the loan exists
     if (!loan) {
       console.log('not present')
@@ -63,14 +63,70 @@ const updateLoanStatus = async (req: Request<{}, {}, LoanApplicationBody>, res: 
       return; // Ensure the function exits after sending the response
     }
 
-    console.log('l',loan)
     loan.loanStatus = loanStatus;
 
 
     // Save the changes
     await loan.save();
     
-    console.log('loan',loan)
+    let subject: string;
+    let message: string;
+    let html: string;
+
+    switch (loanStatus) {
+      case 'approved':
+        subject = 'Loan Application Approved';
+        message = 'Congratulations! Your loan application has been approved.';
+        html = `
+          <html>
+            <body>
+              <h1>Loan Approved</h1>
+              <p>Congratulations! Your loan application has been approved.</p>
+            </body>
+          </html>
+        `;
+        break;
+      case 'rejected':
+        subject = 'Loan Application Rejected';
+        message = 'We regret to inform you that your loan application has been rejected.';
+        html = `
+          <html>
+            <body>
+              <h1>Loan Rejected</h1>
+              <p>We regret to inform you that your loan application has been rejected.</p>
+            </body>
+          </html>
+        `;
+        break;
+      case 'pending':
+        subject = 'Loan Application Pending';
+        message = 'Your loan application is still under review. We will update you once there is a decision.';
+        html = `
+          <html>
+            <body>
+              <h1>Loan Pending</h1>
+              <p>Your loan application is still under review. We will update you once there is a decision.</p>
+            </body>
+          </html>
+        `;
+        break;
+      default:
+        subject = 'Loan Status Updated';
+        message = `Your loan application status has been updated to ${loanStatus}.`;
+        html = `
+          <html>
+            <body>
+              <h1>Loan Status Updated</h1>
+              <p>Your loan application status has been updated to ${loanStatus}.</p>
+            </body>
+          </html>
+        `;
+        break;
+    }
+
+    const to = 'ddjail2004@gmail.com'; // Replace with the actual recipient's email
+
+    await sendMail({ subject, text: message, html, to });
     // Respond with success
     res.status(200).json({ message: 'Loan status updated successfully', loan });
   } catch (error) {
